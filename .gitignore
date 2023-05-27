@@ -1,0 +1,4 @@
+.DS_Store
+.env
+/src/back/public/*
+/node_modules

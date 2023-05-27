@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  front:
+    container_name: gundam-front
+    depends_on:
+      - back
+    env_file:
+      - .env
+    build:
+      dockerfile: Dockerfile
+      context: "./src/front"
+    volumes:
+      - /app/node_modules
+      - ./src/front:/app
+      - ./.env:/app/.env.local
+    ports:
+      - "3000:3000"
+
+  database:
+    image: postgres:latest
+    container_name: gundam-db
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  back:
+    container_name: gundam-back
+    restart: always
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    build:
+      dockerfile: Dockerfile
+      context: "./src/back"
+    env_file:
+      - .env
+    environment:
+      - "DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@gundam-db:5432/${POSTGRES_DB}"
+    depends_on:
+      - database
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && npx ts-node ./src/seeds/default-users.ts && npm run start:dev"
+    volumes:
+      - /app/node_modules
+      - ./src/back:/app
+    ports:
+      - "3001:3000"
+
+volumes:
+  db-data:
