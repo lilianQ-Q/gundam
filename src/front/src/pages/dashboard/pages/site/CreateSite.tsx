@@ -77,13 +77,27 @@ function CreateSite() {
 
 				<div className='flex flex-col w-[300px] gap-5'>
 
-					<Input type='text' name='name' label='Site name' value={currentSite.name} placeholder='A site name' 
-						onChange={(value: string) => currentSite.name = value} />
+					<Input 
+						type='text'
+						name='name' 
+						label='Site name' 
+						value={currentSite.name} 
+						placeholder='A site name' 
+						onChange={(value: string) => currentSite.name = value}
+					/>
 
-					<Input type='text' name='url' label='Website url' placeholder='https://example.com' 
-						onChange={(value: string) => currentSite.url = value} />
+					<Input 
+						type='text' 
+						name='url' 
+						label='Website url' 
+						placeholder='https://example.com' 
+						onChange={(value: string) => currentSite.url = value}
+					/>
 
-					<Selector placeholder='When do I check vitals ?' label='Check Interval' value={currentSite.interval}
+					<Selector 
+						placeholder='When do I check vitals ?' 
+						label='Check Interval' 
+						value={currentSite.interval}
 						items={intervals} 
 						onClick={(id: number) => {
 							const interval = intervals.find((ez) => ez.id === id);
@@ -96,21 +110,29 @@ function CreateSite() {
 						}}
 					/>
 
-					<Input type='text' name='description' label='Description' placeholder='This website is my favorite api'
-						onChange={(value: string) => currentSite.description = value} />
+					<Input 
+						type='text' 
+						name='description' 
+						label='Description' 
+						placeholder='This website is my favorite api'
+						onChange={(value: string) => currentSite.description = value}
+					/>
 
-					<PrimaryCTA label='Create new website' onClick={handleCreation} />
+					<PrimaryCTA label='Create New Website' onClick={handleCreation} />
 				</div>
 
 				<div className='flex flex-col gap-5'>
 					<div className='w-[300px]'>
-						<Selector placeholder='Select related groups' label='Website groups' 
+
+						<Selector 
+							placeholder='Select related groups' 
+							label='Website groups' 
 							items={groups.map((element) => {
 								return {
 									id: element.id,
 									label: element.name
 								};
-							})} 
+							})}
 							onClick={(id: number) => {
 								const group = groups.find((group) => group.id === id);
 
@@ -121,17 +143,23 @@ function CreateSite() {
 									})
 							}} 
 						/>
+
 					</div>
-					
 					<div className='flex gap-5 flex-wrap'>
 						{
 							currentSite.groups.map((element, index) => {
-								return <DeletableCTA key={index} label={element.name} onClick={(label: string) => {
-									setCurrentSite({
-										...currentSite,
-										groups: currentSite.groups.filter((group) => group.name !== label)
-									})
-								}} />
+								return (
+									<DeletableCTA 
+										key={index} 
+										label={element.name} 
+										onClick={(label: string) => {
+											setCurrentSite({
+												...currentSite,
+												groups: currentSite.groups.filter((group) => group.name !== label)
+											})
+										}} 
+									/>
+								);
 							})
 						}
 					</div>
