@@ -11,5 +11,9 @@ export class AppController {
     return "cc bande de salope";
   }
 
-  
+  @Get('/ping')
+  @Public()
+  IsAvailable(): string {
+    return "pong";
+  }
 }

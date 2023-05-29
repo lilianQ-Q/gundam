@@ -4,17 +4,17 @@ import { useNavigate } from 'react-router-dom'
 
 function Logout() {
 
-    const navigate = useNavigate();
+	const navigate = useNavigate();
 
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+	localStorage.removeItem('access_token');
+	localStorage.removeItem('refresh_token');
 
-    useEffect(() => {
-        toast.success("Déconnecté");
-        navigate('/');
-    }, [navigate]);
+	useEffect(() => {
+		toast.success("Déconnecté");
+		navigate('/login');
+	}, [navigate]);
 
-    return (<></>);
+	return (<></>);
 }
 
 export default Logout

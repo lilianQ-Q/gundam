@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 async function main() {
 	const hashed = await bcrypt.hash(process.env.DEFAULT_ADMIN_PASSWORD, 10);
 
-	const intercos = await prisma.user.upsert({
+	const gundamAdmin = await prisma.user.upsert({
 		where: {email: 'lilianux@everate.fr'},
 		update: {
 
@@ -18,7 +18,7 @@ async function main() {
 		}
 	});
 
-	console.log(intercos);
+	console.log(gundamAdmin);
 }
 
 main().then(async() => {
