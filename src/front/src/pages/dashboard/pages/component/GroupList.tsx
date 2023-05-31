@@ -2,7 +2,11 @@ import React, { useEffect, useState } from 'react'
 import privateApi from '../../../../api/axiosapi';
 import { Group } from '../../../../types/Group.type'
 
-function GroupList() {
+interface GroupListProps {
+	items: Group[];
+}
+
+function GroupList(props: GroupListProps) {
 
 	const [groups, setGroups] = useState<Group[]>([]);
 
@@ -12,7 +16,7 @@ function GroupList() {
 				if (response && response.status === 200)
 					setGroups(response.data);
 			})
-	}, []);
+	}, [,props.items]);
 
   return (
 	<div className='p-10 bg-white flex flex-col gap-10'>

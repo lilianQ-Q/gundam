@@ -54,10 +54,12 @@ function Navbar() {
 
   return (
 	<div className='bg-[#161819] text-white p-5 flex justify-between px-10'>
-		<h1 className='font-sembiold text-xl spacing-2 tracking-wider flex gap-2 items-center'>
-			<div className='shrink-0'><img src={require('../../assets/gundamlogo.png')} alt="" className='shrink-0 w-6 h-6' /></div>
-			<span>gundam</span>
-		</h1>
+		<Link to={'/'}>
+			<h1 className='font-sembiold text-xl spacing-2 tracking-wider flex gap-2 items-center'>
+				<div className='shrink-0'><img src={require('../../assets/gundamlogo.png')} alt="" className='shrink-0 w-6 h-6' /></div>
+				<span>gundam</span>
+			</h1>
+		</Link>
 		<div className='hidden md:flex'>
 			<ul className='flex items-center flex-wrap justify-center gap-5'>
 				{

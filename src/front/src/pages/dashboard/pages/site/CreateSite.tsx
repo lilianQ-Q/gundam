@@ -1,6 +1,7 @@
 import { faEye } from '@fortawesome/free-solid-svg-icons'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 import privateApi from '../../../../api/axiosapi'
 import CallToAction from '../../../../components/buttons/CallToAction'
 import DeletableCTA from '../../../../components/buttons/CTA/DeletableCTA'
@@ -15,6 +16,7 @@ import { Group } from '../../../../types/Group.type'
 import { Site } from '../../../../types/Site.type'
 import GroupCreate from '../component/GroupCreate'
 import GroupList from '../component/GroupList'
+import { submitSite } from '../functions/SubmitSite'
 
 const intervals: {id: number, label: string}[] = [
 	{
@@ -45,14 +47,10 @@ const intervals: {id: number, label: string}[] = [
 
 function CreateSite() {
 
-	function handleCreation()
-	{
-		console.log(currentSite);
-		toast(currentSite.name);
-	}
-
 	const [groups, setGroups] = useState<Group[]>([]);
 	const [currentSite, setCurrentSite] = useState<Site>(UseInitialSiteState());
+
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		privateApi.get<Group[]>('/group/getall')
@@ -61,6 +59,19 @@ function CreateSite() {
 					setGroups(response.data);
 			});
 	}, []);
+
+	function handleCreation()
+	{
+		const submitted = submitSite(currentSite);
+
+		toast.promise(submitted, {
+			loading: 'Creating site...',
+			success: () => {
+				return 'Site created !';
+			},
+			error: 'Error while trying to add a new site'
+		});
+	}
 
   return (
 	<div className='flex flex-col'>
@@ -89,7 +100,8 @@ function CreateSite() {
 					<Input 
 						type='text' 
 						name='url' 
-						label='Website url' 
+						label='Website url'
+						value={currentSite.url} 
 						placeholder='https://example.com' 
 						onChange={(value: string) => currentSite.url = value}
 					/>
@@ -113,7 +125,8 @@ function CreateSite() {
 					<Input 
 						type='text' 
 						name='description' 
-						label='Description' 
+						label='Description'
+						value={currentSite.description}
 						placeholder='This website is my favorite api'
 						onChange={(value: string) => currentSite.description = value}
 					/>
@@ -167,9 +180,12 @@ function CreateSite() {
 			</div>
 		</section>
 
-		<GroupCreate />
+		<GroupCreate 
+			onGroupAdded={(group: Group) => {
+				setGroups([...groups, group]);
+		}} />
 
-		<GroupList />
+		<GroupList items={groups} />
 
 		<Footer />
 	</div>

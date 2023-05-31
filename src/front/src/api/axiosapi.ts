@@ -22,14 +22,10 @@ function errorHandler(error: any) {
 		}
 	});
 
-	console.log(error);
-
 	if (error.response) {
 		// The request was made and the server responded with a status code
 		// that falls out of the range of 2xx
-		console.log(error.response.data);
-		console.log(error.response.status);
-		console.log(error.response.headers);
+		// console.log(error.response);
 	
 		if (error.response.status === 401) {
 	  		// Try to get new tokens and retry the original request
@@ -46,7 +42,7 @@ function errorHandler(error: any) {
 					// Retry the original request with the new tokens
 					const config = error.config;
 					config.headers.Authorization = `Bearer ${access_token}`;
-					return privateApi.request(config);
+					return privateApi.request(config).then((response) => {return response;});
 		  		})
 		  		.catch(error => {
 					console.log("Error refreshing tokens", error.message);
@@ -59,14 +55,8 @@ function errorHandler(error: any) {
 				window.location.href = '/login';
 	  		}
 		}
-  	} else if (error.request) {
-		// The request was made but no response was received
-		console.log(error.request);
-  	} else {
-		// Something happened in setting up the request that triggered an Error
-		console.log("Error", error.message);
   	}
-  	console.log(error.config);
+	throw error;
 }
 
 privateApi.interceptors.request.use((config) => {
