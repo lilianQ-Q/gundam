@@ -1,3 +1,4 @@
+import { group } from 'console';
 import React, { useState } from 'react'
 import { toast } from 'react-hot-toast';
 import PrimaryCTA from '../../../../components/buttons/CTA/PrimaryCTA'
@@ -22,9 +23,10 @@ function GroupCreate(props: GroupCreateProps) {
 				type='text' 
 				name='groupname' 
 				label='Group name' 
-				placeholder='Production' 
+				placeholder='Production'
+				value={currentGroup.name}
 				onChange={(value: string) => {
-					currentGroup.name = value;
+					setGroup({...currentGroup, name: value});
 				}} 
 			/>
 			<div>
@@ -38,6 +40,7 @@ function GroupCreate(props: GroupCreateProps) {
 							loading: 'Creating group...',
 							success: (group) => {
 								props.onGroupAdded(group);
+								currentGroup.name = '';
 								return 'Group created !';
 							},
 							error: 'Error while creating a group',
