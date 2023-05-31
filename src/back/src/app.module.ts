@@ -9,11 +9,17 @@ import { SiteController } from './site/site.controller';
 import { SiteService } from './site/site.service';
 import { GroupService } from './group/group.service';
 import { GroupController } from './group/group.controller';
+import { NestjsFormDataModule } from 'nestjs-form-data';
 
 @Module({
-  imports: [PrismaModule, AuthModule, ConfigModule.forRoot({
-    isGlobal: true,
-  }),],
+  imports: [
+    PrismaModule, 
+    AuthModule, 
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    NestjsFormDataModule,
+  ],
   controllers: [AppController, SiteController, GroupController],
   providers: [{
     provide: APP_GUARD,
