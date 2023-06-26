@@ -1,6 +1,6 @@
 import { faCalendarAlt, faPaperclip, faSitemap, faXmarkCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import '../../index.css';
 import CallToAction from '../../components/buttons/CallToAction';
 import Footer from '../../components/common/Footer';
@@ -8,6 +8,11 @@ import Navbar from '../../components/common/Navbar';
 import Reports from '../../components/Reports';
 import StatCard from '../../components/StatCard';
 import { UserContext } from '../../context/UserContext';
+import { Analytics as AnalyticsType } from '../../types/Analytics.type';
+import UseInitialAnalyticsState from '../../hooks/UseInitialAnalyticsState';
+import privateApi from '../../api/axiosapi';
+import SiteList from './pages/component/SiteList';
+import { toast } from 'react-hot-toast';
 
 function Banner() {
 	const user = useContext(UserContext);
@@ -23,13 +28,43 @@ function Banner() {
 			</div>
 			<div className='flex flex-col gap-2 md:flex-row shrink-0'>
 				<CallToAction href='/dashboard/site/add' label='Nouveau Site'/>
-				<CallToAction label='Denier Rapport' color='bg-emerald-300'/>
+				<CallToAction href='/dashboard/report/new' label='Nouveau rapport' color='bg-emerald-300'/>
 			</div>
 		</div>
 	);
 }
 
 function Analytics() {
+
+	const [stats, SetStats] = useState<AnalyticsType>(UseInitialAnalyticsState());
+
+	useEffect(() => {
+		privateApi.get<number>('/site/count')
+			.then((response) => {
+				SetStats((previous) => ({...previous, site: response.data}));
+			});
+
+		privateApi.get<number>('/report/count')
+			.then((response) => {
+				SetStats((previous) => ({...previous, reports: response.data}));
+			})
+
+		privateApi.get<number>('/report/countfailed')
+			.then((response) => {
+				SetStats((previous) => ({...previous, errors: response.data}));
+			})
+
+		privateApi.get<number>('/report/countfailedpercentage')
+			.then((response) => {
+				SetStats((previous) => ({...previous, errorPercentage: response.data}));
+			})
+		
+		privateApi.get<number>('/report/countreportpercentage')
+			.then((response) => {
+				SetStats((previous) => ({...previous, reportPercentage: response.data}));
+			})
+	}, []);
+
 	return (
 		<div className='text-white py-10 flex flex-col gap-10'>
 			<div className='flex justify-between'>
@@ -39,26 +74,29 @@ function Analytics() {
 						icon={faCalendarAlt}
 						color='#d6d7d9'
 					/>
-					<span>Today</span>
+					<span>This Month</span>
 				</div>
 			</div>
 			<div className='flex justify-around flex-col md:flex-row gap-5 flex-wrap items-center'>
 				<StatCard
 					color='bg-blue-200'
 					label='Total sites'
-					value='7'
+					percentage={stats.sitePercentage}
+					value={stats.site.toString()}
 					icon={faSitemap}
 				/>
 				<StatCard
 					color='bg-orange-200'
 					label='Total errors'
-					value='3'
+					percentage={stats.errorPercentage}
+					value={stats.errors.toString()}
 					icon={faXmarkCircle}
 				/>
 				<StatCard
 					color='bg-purple-300'
 					label='Total reports'
-					value='16'
+					percentage={stats.reportPercentage}
+					value={stats.reports.toString()}
 					icon={faPaperclip}
 				/>
 			</div>
@@ -76,6 +114,9 @@ function DashboardHomeComponent() {
 			</section>
 			<section className='flex flex-col p-10 px-20 bg-white'>
 				<Reports />
+			</section>
+			<section className='flex flex-col p-10 px-20 bg-white'>
+				<SiteList />
 			</section>
 			<section>
 				<Footer />
