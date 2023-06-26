@@ -39,7 +39,7 @@ services:
       - "DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@gundam-db:5432/${POSTGRES_DB}"
     depends_on:
       - database
-    command: sh -c "npx prisma generate && npx prisma migrate deploy && npx ts-node ./src/seeds/default-users.ts && npm run start:dev"
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && npx ts-node ./src/seeds/default-users.ts && npx ts-node ./src/seeds/default-reports-status.ts && npx ts-node ./src/seeds/default-reports-type.ts && npm run start:dev"
     volumes:
       - /app/node_modules
       - ./src/back:/app
