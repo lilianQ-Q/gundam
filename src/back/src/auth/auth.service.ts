@@ -26,7 +26,7 @@ export class AuthService {
             },
             {
                 secret: this.configService.get<string>('AT_SECRET'),
-                expiresIn: 60 * 15
+                expiresIn: 60 * 1
             }),
             this.jwtService.signAsync({
                 sub: userId,
