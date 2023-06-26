@@ -10,6 +10,12 @@ import { SiteService } from './site/site.service';
 import { GroupService } from './group/group.service';
 import { GroupController } from './group/group.controller';
 import { NestjsFormDataModule } from 'nestjs-form-data';
+import { StatusController } from './status/status.controller';
+import { StatusService } from './status/status.service';
+import { ReportController } from './report/report.controller';
+import { ReportService } from './report/report.service';
+import { ReportSiteService } from './report-site/report-site.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -19,11 +25,12 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
       isGlobal: true,
     }),
     NestjsFormDataModule,
+    ScheduleModule.forRoot()
   ],
-  controllers: [AppController, SiteController, GroupController],
+  controllers: [AppController, SiteController, GroupController, StatusController, ReportController],
   providers: [{
     provide: APP_GUARD,
     useClass: AtGuard
-  }, SiteService, GroupService],
+  }, SiteService, GroupService, StatusService, ReportService, ReportSiteService],
 })
 export class AppModule {}
