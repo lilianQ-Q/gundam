@@ -1,14 +1,14 @@
-import { Site } from "./Site.type";
+import { ReportSite } from "./ReportSite.type";
 import { Tag } from "./Tag.type";
 
 export type Report = {
 	id: number;
 	title: string;
+
 	userId: number;
 	typeId: number;
-	statusId: number;
 	
-	sites: Site[];
+	sites: ReportSite[];
 	tags: Tag[];
 
 	createdAt: string;
