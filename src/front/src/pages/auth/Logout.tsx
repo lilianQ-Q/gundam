@@ -6,10 +6,10 @@ function Logout() {
 
 	const navigate = useNavigate();
 
-	localStorage.removeItem('access_token');
-	localStorage.removeItem('refresh_token');
-
 	useEffect(() => {
+		localStorage.removeItem('access_token');
+		localStorage.removeItem('refresh_token');
+		
 		toast.success("Déconnecté");
 		navigate('/login');
 	}, [navigate]);
