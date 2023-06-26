@@ -1,7 +1,31 @@
-import React from 'react'
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import React, { useEffect, useState } from 'react'
+import privateApi from '../api/axiosapi';
+import { Report } from '../types/Report.type'
 import CallToAction from './buttons/CallToAction'
 
+interface ReportsWithFailedSiteCount extends Report
+{
+	failedSitesCount: number;
+}
+
 function Reports() {
+
+	const [reports, setReports] = useState<ReportsWithFailedSiteCount[]>([]);
+
+	useEffect(() => {
+		privateApi.get<Report[]>('/report/getlastreports')
+			.then((response) => {
+				const reportsData = response.data;
+				const reportsWithFailedSitesCount = reportsData.map((report) => ({
+					...report,
+					failedSitesCount: report.sites.filter((site) => site.status?.name === 'failed').length
+				}));
+				setReports(reportsWithFailedSitesCount);
+			});
+	}, []);
+
   return (
 	<div className='flex flex-col gap-5'>
 		<div className='flex justify-between'>
@@ -19,22 +43,21 @@ function Reports() {
 					</tr>
 				</thead>
 				<tbody className='text-left border-[1px] border-[#ecedef]'>
-					<tr className='border-[1px] border-[#ecedef]'>
-						<td className='p-3 font-normal text-[#737478] text-sm'>29 Septembre 2023</td>
-						<td className='text-sm font-semibold text-[#171719] hidden md:table-cell'>17</td>
-						<td className='text-sm font-semibold text-[#171719]'>0</td>
-						<td>
-							<span className='text-sm font-medium bg-green-200 text-green-600 px-5 p-1 rounded-full'>Routine</span>
-						</td>
-					</tr>
-					<tr className='border-[1px] border-[#ecedef]'>
-						<td className='p-3 font-normal text-[#737478] text-sm'>29 Septembre 2023</td>
-						<td className='text-sm font-semibold text-[#171719] hidden md:table-cell'>17</td>
-						<td className='text-sm font-semibold text-[#171719]'>0</td>
-						<td>
-							<span className='text-sm font-medium bg-orange-200 text-orange-600 px-5 p-1 rounded-full'>Spontanée</span>
-						</td>
-					</tr>
+					{
+						reports.map((element, index) => {
+							return (
+								<tr className='border-[1px] border-[#ecedef]' key={index}>
+									<td className='p-3 font-normal text-[#737478] text-sm'>{format(new Date(element.createdAt), 'd MMMM yyyy', {locale: fr})}</td>
+									<td className='text-sm font-semibold text-[#171719] hidden md:table-cell'>{element.sites.length}</td>
+									<td className='text-sm font-semibold text-[#171719]'>{element.failedSitesCount}</td>
+									<td>
+										<span className='text-sm font-medium bg-green-200 text-green-600 px-5 p-1 rounded-full'>Routine</span>
+									</td>
+								</tr>
+							);
+						})
+					}
+					
 				</tbody>
 			</table>
 		</div>

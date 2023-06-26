@@ -7,6 +7,7 @@ interface StatCardProps {
     label: string;
     value: string;
     icon: IconDefinition;
+    percentage: number;
 }
 
 function StatCard(props: StatCardProps) {
@@ -21,7 +22,7 @@ function StatCard(props: StatCardProps) {
                 />
             </div>
             <span className='h-5 py-3 px-3 border-[1px] border-[#37383c] flex items-center justify-center font-semibold text-xs rounded-full text-[#b6d6c7]'>
-                +24%
+                {`+${props.percentage}%`}
             </span>
         </div>
         <div className='flex flex-col gap-2'>

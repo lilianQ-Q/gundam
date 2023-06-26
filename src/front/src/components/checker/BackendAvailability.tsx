@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { redirect } from 'react-router-dom';
 import { publicApi } from '../../api/axiosapi';
 import Logout from '../../pages/auth/Logout';
 import Loading from '../common/Loading';
