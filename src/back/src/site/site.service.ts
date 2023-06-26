@@ -18,9 +18,30 @@ export class SiteService
                 interval: dto.interval,
                 description: dto.description,
                 userId: userId,
-                group: {
+                groups: {
                     connect: dto.groupIds.map((id: number) => ({id: parseInt(id.toString())}))
                 }
+            }
+        })
+    }
+
+    async getSiteCount(userId: number) : Promise<number>
+    {
+        return await this.prisma.site.count({
+            where: {
+                userId: userId
+            }
+        });
+    }
+
+    async getAllUserSites(userId: number) : Promise<Site[]>
+    {
+        return await this.prisma.site.findMany({
+            where: {
+                userId: userId
+            },
+            include: {
+                groups: true
             }
         })
     }
