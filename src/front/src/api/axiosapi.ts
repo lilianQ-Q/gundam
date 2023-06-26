@@ -4,15 +4,23 @@ const privateApi: AxiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   headers: {
 	"Content-Type": "application/x-www-form-urlencoded",
-  }
+  },
+  timeout: 5000
 });
 
 export const publicApi: AxiosInstance = axios.create({
 	baseURL: process.env.REACT_APP_API_URL,
 	headers: {
 	  "Content-Type": "application/x-www-form-urlencoded",
-	}
-  });
+	},
+	timeout: 5000
+});
+
+function addTimestamps(url: string) {
+	const currentTimePrefix = url.indexOf('?') === -1 ? `?` : '&';
+	const currentTimeArg = `${currentTimePrefix}timestamps=${new Date().getTime()}`;
+	return `${url}${currentTimeArg}`;
+}
 
 function errorHandler(error: any) {
 	const errorApi: AxiosInstance = axios.create({
@@ -23,9 +31,6 @@ function errorHandler(error: any) {
 	});
 
 	if (error.response) {
-		// The request was made and the server responded with a status code
-		// that falls out of the range of 2xx
-		// console.log(error.response);
 	
 		if (error.response.status === 401) {
 	  		// Try to get new tokens and retry the original request
@@ -47,15 +52,19 @@ function errorHandler(error: any) {
 		  		.catch(error => {
 					console.log("Error refreshing tokens", error.message);
 					// Redirect to login page if the retry still results in a 401 error
-					window.location.href = '/login';
+					window.location.href = '/logout';
 		  		});
 	  		} else {
 				console.log("No refresh token available");
 				// Redirect to login page if no refresh token is available
-				window.location.href = '/login';
+				window.location.href = '/logout';
 	  		}
 		}
   	}
+
+	// Log the error details
+	console.log("Error details:", error.message, error.response);
+
 	throw error;
 }
 
@@ -64,6 +73,8 @@ privateApi.interceptors.request.use((config) => {
   if (token) {
 	config.headers.Authorization = `Bearer ${token}`;
   }
+  if (config.url)
+  	config.url = addTimestamps(config.url);
   return config;
 });
 
